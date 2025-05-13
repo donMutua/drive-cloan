@@ -1,10 +1,9 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+'use client';
 
-export default function SignUpPage() {
+import { SignIn } from '@clerk/nextjs';
+import Image from 'next/image';
+
+export default function SignInPage() {
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
       <div className="flex items-center justify-center px-8">
@@ -27,45 +26,44 @@ export default function SignUpPage() {
               </svg>
             </div>
             <div className="space-y-2">
-              <h1 className="text-3xl font-bold">Create an account</h1>
-              <p className="text-muted-foreground">Start your journey with CloudVault</p>
+              <h1 className="text-3xl font-bold">Sign in to your account</h1>
+              <p className="text-muted-foreground">Welcome back to CloudVault</p>
             </div>
           </div>
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="firstName">First name</Label>
-                <Input id="firstName" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="lastName">Last name</Label>
-                <Input id="lastName" />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="name@example.com" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" />
-            </div>
-            <Button asChild className="w-full">
-              <Link href="/dashboard">Sign Up</Link>
-            </Button>
-            <div className="text-center text-sm">
-              Already have an account?{' '}
-              <Link href="/sign-in" className="text-primary hover:underline">
-                Sign in
-              </Link>
-            </div>
-          </div>
+
+          <SignIn
+            appearance={{
+              elements: {
+                rootBox: 'w-full',
+                card: 'shadow-none p-0',
+                header: 'hidden',
+                footer: 'hidden',
+                formButtonPrimary:
+                  'w-full bg-primary hover:bg-primary/90 text-white py-2 rounded-md',
+                formFieldInput:
+                  'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6',
+                formFieldLabel: 'block text-sm font-medium leading-6 text-gray-900 mb-1',
+                formResendCodeLink: 'text-primary hover:text-primary/80',
+                socialButtonsBlockButton:
+                  'w-full border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-500 shadow-sm hover:bg-gray-50 rounded-md',
+                footerAction: 'mt-4 text-center text-sm',
+                footerActionLink: 'text-primary hover:underline',
+              },
+              layout: {
+                socialButtonsPlacement: 'bottom',
+              },
+            }}
+            routing="path"
+            path="/auth/sign-in"
+            signUpUrl="/auth/sign-up"
+            fallbackRedirectUrl="/dashboard"
+          />
         </div>
       </div>
       <div className="hidden bg-muted lg:block">
         <div className="relative h-full w-full">
           <Image
-            src="/signup.jpg"
+            src="/placeholder.svg?key=lwmu2"
             alt="Cloud storage illustration"
             fill
             className="object-cover"
