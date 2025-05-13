@@ -1,19 +1,17 @@
-import { ReactNode } from 'react';
-import { auth } from '@clerk/nextjs/server';
-import { redirect } from 'next/navigation';
+import type { ReactNode } from 'react';
+import { Sidebar } from '@/components/sidebar';
+import { DashboardHeader } from '@/components/dashboard-header';
+import { Toaster } from '@/components/ui/sonner';
 
-export default async function DashboardLayout({ children }: { children: ReactNode }) {
-  const { userId } = await auth();
-
-  if (!userId) {
-    redirect('/auth/sign-in');
-  }
-
+export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="dashboard-layout">
-      <header className="dashboard-header">Dashboard Header</header>
-      <aside className="dashboard-sidebar">Sidebar</aside>
-      <main className="dashboard-content">{children}</main>
+    <div className="flex min-h-screen bg-white">
+      <Sidebar />
+      <div className="flex-1">
+        <DashboardHeader />
+        <main className="p-6">{children}</main>
+      </div>
+      <Toaster />
     </div>
   );
 }

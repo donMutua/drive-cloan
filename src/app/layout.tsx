@@ -1,8 +1,22 @@
 import type React from 'react';
 import type { Metadata } from 'next';
+import { Manrope, Noto_Sans } from 'next/font/google'; // Import next/font
 import './globals.css';
 import { Toaster } from '@/components/ui/sonner';
-import { ClerkProvider } from '@clerk/nextjs';
+
+const manrope = Manrope({
+  subsets: ['latin'],
+  weight: ['400', '500', '700', '800'],
+  display: 'swap',
+  variable: '--font-manrope',
+});
+
+const notoSans = Noto_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '700', '900'],
+  display: 'swap',
+  variable: '--font-noto-sans',
+});
 
 export const metadata: Metadata = {
   title: 'Cloud.io - A new home for your documents',
@@ -15,20 +29,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <head>
-          <link rel="preconnect" href="https://fonts.gstatic.com/" crossOrigin="" />
-          <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?display=swap&family=Manrope%3Awght%40400%3B500%3B700%3B800&family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
-          />
-        </head>
-        <body style={{ fontFamily: 'Manrope, "Noto Sans", sans-serif' }}>
-          {children}
-          <Toaster />
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en" className={`${manrope.variable} ${notoSans.variable}`}>
+      {' '}
+      {/* Apply font variables to html tag */}
+      <head /> {/* Font links are handled by next/font */}
+      <body style={{ fontFamily: 'var(--font-manrope), var(--font-noto-sans), sans-serif' }}>
+        {' '}
+        {/* Use CSS variables */}
+        {children}
+        <Toaster />
+      </body>
+    </html>
   );
 }
