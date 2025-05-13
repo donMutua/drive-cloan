@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { Manrope, Noto_Sans } from 'next/font/google'; // Import next/font
 import './globals.css';
 import { Toaster } from '@/components/ui/sonner';
+import { ClerkProvider } from '@clerk/nextjs';
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -29,16 +30,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${manrope.variable} ${notoSans.variable}`}>
-      {' '}
-      {/* Apply font variables to html tag */}
-      <head /> {/* Font links are handled by next/font */}
-      <body style={{ fontFamily: 'var(--font-manrope), var(--font-noto-sans), sans-serif' }}>
-        {' '}
-        {/* Use CSS variables */}
-        {children}
-        <Toaster />
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en" className={`${manrope.variable} ${notoSans.variable}`}>
+        <body style={{ fontFamily: 'var(--font-manrope), var(--font-noto-sans), sans-serif' }}>
+          {children}
+          <Toaster />
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

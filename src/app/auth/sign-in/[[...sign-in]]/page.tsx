@@ -63,7 +63,7 @@ export default function SignInPage() {
       <div className="hidden bg-muted lg:block">
         <div className="relative h-full w-full">
           <Image
-            src="/placeholder.svg?key=lwmu2"
+            src="/signin.jpg"
             alt="Cloud storage illustration"
             fill
             className="object-cover"
