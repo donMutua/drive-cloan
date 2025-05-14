@@ -1,8 +1,7 @@
-// src/app/api/clerk-webhook/route.ts
 import { Webhook } from 'svix';
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { supabaseAdmin } from '@/lib/supabase';
 
 // Webhook secret from Clerk Dashboard
 const webhookSecret = process.env.CLERK_WEBHOOK_SECRET || '';
