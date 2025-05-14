@@ -1,7 +1,8 @@
+// src/app/api/clerk-webhook/route.ts
 import { Webhook } from 'svix';
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { createAdminClient } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 
 // Webhook secret from Clerk Dashboard
 const webhookSecret = process.env.CLERK_WEBHOOK_SECRET || '';
@@ -36,13 +37,10 @@ export async function POST(req: Request) {
     return new Response('Error verifying webhook', { status: 400 });
   }
 
-  // Get the admin client for Supabase
-  const supabaseAdmin = createAdminClient();
-
   // Handle the webhook event
   switch (evt.type) {
     case 'user.created':
-      // Create a new user in Supabase
+      // Create a new user in Supabase with default storage values
       const { data, error } = await supabaseAdmin
         .from('users')
         .insert({
@@ -51,12 +49,28 @@ export async function POST(req: Request) {
           first_name: evt.data.first_name || '',
           last_name: evt.data.last_name || '',
           image_url: evt.data.image_url || '',
+          storage_used: 0,
+          storage_limit: 10 * 1024 * 1024 * 1024, // 10GB default
         })
         .select();
 
       if (error) {
         console.error('Error creating user in Supabase:', error);
         return NextResponse.json({ error: 'Failed to create user' }, { status: 500 });
+      }
+
+      // Create root folder for the user
+      const { error: folderError } = await supabaseAdmin.from('folders').insert({
+        name: 'My Drive',
+        user_id: evt.data.id,
+        parent_id: null,
+        path: '/',
+        is_starred: false,
+        is_trashed: false,
+      });
+
+      if (folderError) {
+        console.error('Error creating root folder:', folderError);
       }
 
       return NextResponse.json({ success: true, data });
@@ -82,7 +96,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: true, data: updatedUser });
 
     case 'user.deleted':
-      // Delete user from Supabase
+      // Delete user from Supabase (all related data will be cascaded)
       const { error: deleteError } = await supabaseAdmin
         .from('users')
         .delete()
